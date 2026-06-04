@@ -103,17 +103,7 @@ Total % = 640 / 128 = 5.0%
 
 ## 🖼️ 界面预览
 
-你可以在这里放一张截图：
-
-```markdown
-![Dashboard Preview](docs/preview.png)
-```
-
-建议新建一个 `docs` 文件夹，把截图命名为：
-
-```text
-docs/preview.png
-```
+![alt text](image.png)
 
 ---
 
