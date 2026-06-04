@@ -1,19 +1,19 @@
-# 🚀 GPU Server Dashboard / GPU 服务器资源监控面板
+# 🚀 GPU Server Dashboard
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Windows-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Backend-SSH%20%2B%20Python3-green?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/UI-Desktop%20Dashboard-purple?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Remote-Linux-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/GPU-NVIDIA-brightgreen?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Backend-SSH%20%2B%20Python3-purple?style=for-the-badge" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
 </p>
 
 <p align="center">
-  <b>A beautiful desktop-style GPU server resource dashboard over SSH.</b>
+  <b>A lightweight desktop dashboard for monitoring GPU server resources over SSH.</b>
 </p>
 
 <p align="center">
-  <b>一个基于 SSH 的高颜值 GPU 服务器资源监控桌面面板。</b>
+  <b>一个基于 SSH 的轻量级 GPU 服务器资源监控桌面面板。</b>
 </p>
 
 ---
@@ -29,124 +29,70 @@
 
 ## 📌 项目简介
 
-**GPU Server Dashboard** 是一个面向 Windows 用户的服务器资源监控工具。
-它可以通过 **SSH 持久连接** 到 Linux GPU 服务器，并以一个美观的桌面窗口实时展示服务器资源状态。
+**GPU Server Dashboard** 是一个 Windows 桌面端 GPU 服务器资源监控工具。
 
-它适合以下场景：
+它通过 **SSH 持久连接** 到远程 Linux 服务器，并实时展示：
 
-* 你有一台或多台 Linux GPU 服务器；
-* 你经常需要查看显卡占用、显存、功耗、温度；
-* 你不想每次都手动敲 `nvidia-smi`；
-* 你想要一个比命令行更直观、更好看的资源面板；
-* 你希望通过 Windows 桌面软件查看服务器运行状态。
-
----
-
-## ✨ 功能特点
-
-### 🧠 系统内存监控
-
-* 显示内存总量；
-* 显示已用内存；
-* 显示可用内存；
-* 显示缓存内存；
-* 环形进度图展示内存占用比例。
-
-### 🎮 GPU 资源监控
-
-每张 GPU 单独显示一个卡片，包括：
-
-* GPU 编号；
-* GPU 型号；
+* 系统内存；
+* CPU 负载；
+* NVIDIA GPU 利用率；
 * 显存占用；
-* GPU 利用率；
-* 温度；
-* 当前功耗；
-* 功率上限；
-* 当前运行在该 GPU 上的进程。
+* GPU 温度；
+* GPU 功耗；
+* GPU 上正在运行的进程；
+* CPU 占用较高的进程。
 
-### 🧾 GPU 进程监控
-
-可以看到：
-
-* PID；
-* 用户名；
-* 运行时间；
-* 使用显存；
-* 运行命令。
-
-### ⚙️ CPU 进程监控
-
-展示 CPU 占用较高的进程，并区分：
-
-* `Core %`：Linux `ps` 原始 CPU 占用，多线程任务可能超过 100%；
-* `Total %`：按服务器总 CPU 核心数归一化后的整机 CPU 占比。
-
-例如：
-
-```text
-Core % = 640%
-CPU cores = 128
-Total % = 640 / 128 = 5.0%
-```
-
-这表示该进程大约使用了 6.4 个 CPU 核心，占整台服务器约 5%。
-
-### 🔁 稳定刷新
-
-* 使用单个 SSH 持久连接；
-* 不是每次刷新都重新 SSH；
-* 前端增量更新，减少滚动卡顿；
-* 默认刷新间隔为 `0.6` 秒。
+它适合经常需要查看 `nvidia-smi`、管理训练任务、监控多卡服务器资源的用户。
 
 ---
 
-## 🖼️ 界面预览
+## ✨ 特性
 
-![alt text](image.png)
+* 🖥️ **桌面窗口界面**：不需要打开浏览器；
+* 🔗 **SSH 持久连接**：不是每次刷新都重新登录；
+* 🎮 **多 GPU 支持**：每张 GPU 独立显示；
+* 📊 **实时资源监控**：显存、温度、功耗、利用率；
+* 🧾 **进程级信息**：查看每张 GPU 上运行的任务；
+* ⚙️ **CPU 进程表**：显示 CPU 占用较高的进程；
+* 🚫 **无 CMD 黑窗口**：exe 版本可无控制台运行；
+* 🧹 **端口清理脚本**：异常退出时可手动释放本地端口。
 
 ---
 
-## 🧩 工作原理
+## 🧩 工作方式
 
 ```text
-Windows 本地软件
+Windows Desktop App
         │
-        │  1 个持久 SSH 连接
+        │  persistent SSH connection
         ▼
-Linux GPU 服务器
+Linux GPU Server
         │
-        │  远程 python3 采集资源信息
+        │  remote python3 collector
         ▼
-本地 Dashboard 窗口
+Local Dashboard Window
         │
-        │  每 0.6 秒刷新 UI
+        │  incremental UI refresh
         ▼
-实时显示 CPU / Memory / GPU / Processes
+CPU / Memory / GPU / Process Info
 ```
 
-核心流程：
-
-```text
-点击连接
-→ 本地启动 SSH
-→ 服务器端运行 python3 资源采集脚本
-→ 采集 nvidia-smi、内存、CPU、进程信息
-→ 本地桌面窗口展示
-```
+软件点击“连接”后，会创建一个 SSH 连接，并在远程服务器上运行一个轻量级 `python3` 采集脚本。
+之后资源数据会通过同一个 SSH 通道持续返回本地界面。
 
 ---
 
 ## ✅ 环境要求
 
-### 本地 Windows 电脑
+### 本地 Windows
 
 需要：
 
 * Windows 10 / Windows 11；
 * Python 3；
 * OpenSSH Client；
-* `pywebview`。
+* `pywebview`；
+* 如果要打包 exe，需要 `pyinstaller`。
 
 ### 远程 Linux 服务器
 
@@ -156,11 +102,11 @@ Linux GPU 服务器
 * Python 3；
 * NVIDIA 驱动；
 * `nvidia-smi`；
-* 可以通过 SSH 连接。
+* SSH 可连接。
 
 ---
 
-## 🚀 快速开始
+## 🚀 快速使用
 
 ### 1. 克隆项目
 
@@ -169,7 +115,7 @@ git clone https://github.com/wyq88868-arch/gpu-server-dashboard.git
 cd gpu-server-dashboard
 ```
 
-### 2. 检查本地 Python 3
+### 2. 检查 Python 3
 
 Windows 下双击：
 
@@ -177,19 +123,15 @@ Windows 下双击：
 check_python3.bat
 ```
 
-或者在 CMD / PowerShell 中运行：
+或在 CMD / PowerShell 中运行：
 
 ```cmd
 py -3 --version
 ```
 
-如果能看到类似：
+如果能看到 Python 3 版本，说明环境正常。
 
-```text
-Python 3.12.x
-```
-
-说明 Python 3 正常。
+---
 
 ### 3. 安装依赖
 
@@ -199,7 +141,7 @@ Python 3.12.x
 install_dependencies_py3_only.bat
 ```
 
-如果网络较慢，可以使用清华源版本：
+如果网络较慢，可以使用：
 
 ```text
 install_dependencies_tuna_mirror_py3_only.bat
@@ -211,7 +153,9 @@ install_dependencies_tuna_mirror_py3_only.bat
 py -3 -m pip install pywebview
 ```
 
-### 4. 启动软件
+---
+
+### 4. 启动桌面版
 
 双击：
 
@@ -219,7 +163,7 @@ py -3 -m pip install pywebview
 run_desktop_app_v23.bat
 ```
 
-然后在软件界面输入服务器地址，例如：
+在软件中填写 SSH 主机，例如：
 
 ```text
 your-server
@@ -231,52 +175,99 @@ your-server
 user@192.168.1.100
 ```
 
-端口默认：
+默认端口：
 
 ```text
 22
 ```
 
-刷新间隔默认：
+默认刷新间隔：
 
 ```text
 0.6
 ```
 
+然后点击 **连接**。
+
 ---
 
-# 🔐 SSH 密钥配置教程：新手小白版
+## 📦 打包成无黑框 exe
 
-如果你以前没有配置过 SSH 密钥，可以按下面步骤来。
+如果你希望生成真正的 `.exe` 文件，并且不显示 CMD 黑窗口，可以使用 V2.4 打包脚本。
+
+双击：
+
+```text
+build_exe_no_console_v24.bat
+```
+
+生成结果在：
+
+```text
+dist/GPU-Server-Dashboard.exe
+```
+
+如果打包失败，请查看：
+
+```text
+build_log.txt
+```
+
+如果 exe 运行异常，可以构建调试版：
+
+```text
+build_exe_debug_console_v24.bat
+```
+
+---
+
+# 🔐 SSH 密钥配置教程：新手版
+
+如果你已经可以直接运行：
+
+```cmd
+ssh your-server
+```
+
+并成功登录服务器，可以跳过本节。
+
+如果你还没有配置 SSH 密钥，可以按下面步骤操作。
+
+---
 
 ## 1. 什么是 SSH 密钥？
 
-SSH 密钥可以理解为一把“电子钥匙”。
-
-你本地电脑有一把：
+SSH 密钥是一对文件：
 
 ```text
-私钥 private key
+私钥：放在你自己的电脑上，绝对不能发给别人
+公钥：放到服务器上，用来识别你的电脑
 ```
 
-服务器上保存一把：
+常见文件名：
 
 ```text
-公钥 public key
+id_ed25519        私钥
+id_ed25519.pub    公钥
 ```
 
-当你连接服务器时，系统会自动验证这两把钥匙是否匹配。
-这样你就可以不用每次输入密码。
+⚠️ 注意：
+
+```text
+不要把 id_ed25519、id_rsa、*.pem、*.key 上传到 GitHub。
+```
 
 ---
 
-## 2. 在 Windows 上生成 SSH 密钥
+## 2. 在 Windows 上生成密钥
 
-打开 PowerShell 或 CMD，运行：
+打开 CMD 或 PowerShell，运行：
 
 ```cmd
 ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
+
+一路回车即可。
 
 如果你的系统不支持 `ed25519`，可以用：
 
@@ -284,31 +275,15 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ```
 
-一路回车即可。
-
 默认会生成在：
 
 ```text
 C:\Users\你的用户名\.ssh\
 ```
 
-里面通常会有两个文件：
-
-```text
-id_ed25519        私钥，不要发给别人
-id_ed25519.pub    公钥，可以放到服务器
-```
-
-⚠️ 注意：
-
-```text
-id_ed25519 是私钥，千万不要上传到 GitHub，也不要发给别人。
-id_ed25519.pub 是公钥，可以放到服务器。
-```
-
 ---
 
-## 3. 查看你的公钥
+## 3. 查看公钥
 
 运行：
 
@@ -316,15 +291,13 @@ id_ed25519.pub 是公钥，可以放到服务器。
 type %USERPROFILE%\.ssh\id_ed25519.pub
 ```
 
-如果你用的是 RSA：
+如果你生成的是 RSA：
 
 ```cmd
 type %USERPROFILE%\.ssh\id_rsa.pub
 ```
 
-复制输出的整行内容。
-
-它看起来像这样：
+复制输出的整行内容，例如：
 
 ```text
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... your_email@example.com
@@ -332,7 +305,7 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... your_email@example.com
 
 ---
 
-## 4. 把公钥添加到服务器
+## 4. 把公钥放到服务器
 
 先用密码登录服务器：
 
@@ -340,7 +313,7 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... your_email@example.com
 ssh user@server_ip
 ```
 
-然后在服务器上执行：
+在服务器上执行：
 
 ```bash
 mkdir -p ~/.ssh
@@ -372,15 +345,13 @@ ssh user@server_ip
 
 ## 6. 配置 SSH 别名
 
-你可以给服务器配置一个好记的名字。
+你可以给服务器设置一个短名字，例如 `your-server`。
 
-编辑这个文件：
+编辑或新建：
 
 ```text
 C:\Users\你的用户名\.ssh\config
 ```
-
-如果没有 `config` 文件，就新建一个。
 
 写入：
 
@@ -392,13 +363,13 @@ Host your-server
     IdentityFile ~/.ssh/id_ed25519
 ```
 
-之后你就可以直接运行：
+然后测试：
 
 ```cmd
 ssh your-server
 ```
 
-如果能连上，那么软件里也可以直接填：
+如果能登录，那么软件里也可以直接填：
 
 ```text
 your-server
@@ -408,31 +379,25 @@ your-server
 
 ## 🧪 测试服务器环境
 
-运行：
-
-```text
-test_remote_server_python3.bat
-```
-
-或者手动测试：
+测试远程 Python 3：
 
 ```cmd
 ssh your-server python3 --version
 ```
 
-测试 GPU：
+测试 NVIDIA GPU：
 
 ```cmd
 ssh your-server nvidia-smi
 ```
 
-如果都正常，Dashboard 就可以正常读取服务器资源。
+如果这两个命令都正常，Dashboard 一般就可以正常显示服务器资源。
 
 ---
 
-## 🧹 关闭本地端口
+## 🧹 清理本地端口
 
-本软件默认使用本地端口：
+软件默认使用本地端口：
 
 ```text
 8766
@@ -440,18 +405,13 @@ ssh your-server nvidia-smi
 
 正常关闭软件窗口后，端口会自动释放。
 
-如果你想手动清理旧端口，可以运行：
+如果异常退出，可以运行：
 
 ```text
 close_dashboard_ports.bat
 ```
 
-它会清理：
-
-```text
-8765
-8766
-```
+它会尝试清理旧的本地 Dashboard 服务端口。
 
 ---
 
@@ -473,7 +433,7 @@ gpu-server-dashboard/
 
 ---
 
-## 🔒 隐私与安全说明
+## 🔒 隐私与安全
 
 本项目不会内置：
 
@@ -481,17 +441,17 @@ gpu-server-dashboard/
 * SSH 私钥；
 * 服务器实时数据；
 * 训练日志；
-* API token；
-* GitHub token。
-
-本项目通过你本地系统已有的 SSH 配置进行连接。
+* API Token；
+* GitHub Token。
 
 请不要上传以下文件：
 
 ```text
 dashboard_config.json
+dashboard_runtime.log
 run_log*.txt
 install_log*.txt
+build_log.txt
 *.pem
 *.key
 id_rsa
@@ -499,71 +459,62 @@ id_ed25519
 .ssh/
 ```
 
-`.gitignore` 中已经默认忽略这些文件。
+建议在 `.gitignore` 中忽略这些文件。
 
 ---
 
 ## ❓ 常见问题
 
-### Q1：为什么 CPU 会显示 600%？
+### 1. CPU 为什么会显示 600%？
 
-这是 Linux 的正常行为。
-
-`ps` 命令中的 CPU 百分比是按“单个 CPU 核心”为 100% 计算的。
-如果一个多线程程序用了 6 个核心，就可能显示：
+Linux 的 `ps` 命令以单个 CPU 核心为 100%。
+如果一个进程使用了 6 个核心，就可能显示：
 
 ```text
 600%
 ```
 
-所以本项目额外显示了 `Total %`，表示它占整台服务器的比例。
+所以项目中同时显示：
+
+```text
+Core %：原始 CPU 占用
+Total %：按服务器总核心数归一化后的整机占比
+```
 
 ---
 
-### Q2：这个软件会不会一直创建 SSH？
+### 2. 软件会一直创建 SSH 连接吗？
 
 不会。
 
-它使用的是单个持久 SSH 连接：
+它使用一个持久 SSH 连接：
 
 ```text
 点击连接
 → 创建一个 SSH 进程
-→ 服务器端启动 python3 采集循环
-→ 持续返回数据
+→ 远程服务器运行 python3 采集循环
+→ 数据持续返回本地界面
 ```
 
 不是每 0.6 秒重新连接一次。
 
 ---
 
-### Q3：关闭软件后端口会释放吗？
+### 3. 为什么没有显示 GPU？
 
-正常情况下会自动释放。
-
-如果异常退出，可以运行：
-
-```text
-close_dashboard_ports.bat
-```
-
----
-
-### Q4：为什么看不到 GPU？
-
-请先在本地测试：
+先测试：
 
 ```cmd
 ssh your-server nvidia-smi
 ```
 
-如果这个命令没有输出 GPU 信息，Dashboard 也无法显示 GPU。
+如果这个命令无法显示 GPU，软件也无法显示 GPU 信息。
 
 ---
 
-### Q5：服务器必须安装 Python 3 吗？
+### 4. 服务器必须安装 Python 3 吗？
 
-是的。远程服务器需要有 `python3`。
+是的。远程服务器需要 `python3`。
 
 测试：
 
@@ -573,20 +524,33 @@ ssh your-server python3 --version
 
 ---
 
-## 🛠️ TODO
+### 5. 关闭软件后端口还会占用吗？
 
-* [ ] 支持多服务器切换；
-* [ ] 支持暗色模式；
-* [ ] 支持历史曲线；
-* [ ] 支持 GPU 空闲提醒；
-* [ ] 支持进程一键复制；
-* [ ] 支持 Linux/macOS 客户端。
+正常不会。关闭软件窗口后，本地服务和 SSH 子进程会退出。
+
+如果异常残留，可以运行：
+
+```text
+close_dashboard_ports.bat
+```
+
+---
+
+## 🛠️ Roadmap
+
+* [ ] 多服务器管理；
+* [ ] 暗色模式；
+* [ ] 资源历史曲线；
+* [ ] GPU 空闲提醒；
+* [ ] 进程搜索；
+* [ ] 进程命令复制；
+* [ ] Linux/macOS 客户端。
 
 ---
 
 ## 📜 License
 
-This project is released under the MIT License.
+This project is licensed under the MIT License.
 
 ---
 
@@ -594,98 +558,56 @@ This project is released under the MIT License.
 
 ## 📌 Introduction
 
-**GPU Server Dashboard** is a beautiful desktop-style resource monitor for Linux GPU servers.
-It connects to a remote server through a **persistent SSH connection** and displays real-time system and GPU information in a modern desktop dashboard.
+**GPU Server Dashboard** is a lightweight Windows desktop application for monitoring Linux GPU servers over SSH.
 
-It is designed for users who:
+It displays real-time information including:
 
-* manage Linux GPU servers;
-* frequently check `nvidia-smi`;
-* want a better visual dashboard than command-line tools;
-* use Windows as their local machine;
-* need a lightweight SSH-based monitoring tool.
+* system memory;
+* CPU load;
+* NVIDIA GPU utilization;
+* GPU memory usage;
+* GPU temperature;
+* GPU power draw;
+* running GPU processes;
+* top CPU processes.
+
+It is designed for users who frequently check `nvidia-smi` and manage GPU training tasks.
 
 ---
 
 ## ✨ Features
 
-### 🧠 System Memory Monitoring
-
-* Total memory;
-* Used memory;
-* Available memory;
-* Cache memory;
-* Circular memory usage indicator.
-
-### 🎮 GPU Monitoring
-
-Each GPU is displayed as an independent card with:
-
-* GPU index;
-* GPU name;
-* VRAM usage;
-* GPU utilization;
-* temperature;
-* power draw;
-* power limit;
-* running processes.
-
-### 🧾 GPU Process Monitoring
-
-For each GPU process, the dashboard shows:
-
-* PID;
-* user;
-* elapsed time;
-* used GPU memory;
-* command.
-
-### ⚙️ CPU Process Monitoring
-
-The dashboard shows top CPU processes with:
-
-* `Core %`: raw Linux `ps` CPU percentage;
-* `Total %`: normalized CPU usage based on total CPU cores.
-
-Example:
-
-```text
-Core % = 640%
-CPU cores = 128
-Total % = 640 / 128 = 5.0%
-```
-
-This means the process uses about 6.4 CPU cores, or about 5% of the whole machine.
-
----
-
-## 🖼️ Preview
-
-You can add a screenshot here:
-
-```markdown
-![Dashboard Preview](docs/preview.png)
-```
+* 🖥️ **Desktop window UI**: no browser required;
+* 🔗 **Persistent SSH connection**: no repeated login on every refresh;
+* 🎮 **Multi-GPU support**;
+* 📊 **Real-time GPU monitoring**;
+* 🧾 **Per-GPU process display**;
+* ⚙️ **CPU process table**;
+* 🚫 **No console window in exe build**;
+* 🧹 **Port cleanup script**.
 
 ---
 
 ## 🧩 How It Works
 
 ```text
-Windows desktop app
+Windows Desktop App
         │
-        │  one persistent SSH connection
+        │  persistent SSH connection
         ▼
-Linux GPU server
+Linux GPU Server
         │
-        │  remote Python3 resource collector
+        │  remote python3 collector
         ▼
-Local dashboard window
+Local Dashboard Window
         │
-        │  UI refresh every 0.6 seconds
+        │  incremental UI refresh
         ▼
-CPU / Memory / GPU / Process monitoring
+CPU / Memory / GPU / Process Info
 ```
+
+When you click **Connect**, the app opens one SSH connection and starts a lightweight remote Python3 collector.
+Resource data is streamed back through the same SSH channel.
 
 ---
 
@@ -696,7 +618,8 @@ CPU / Memory / GPU / Process monitoring
 * Windows 10 / Windows 11;
 * Python 3;
 * OpenSSH Client;
-* `pywebview`.
+* `pywebview`;
+* `pyinstaller` if you want to build an exe.
 
 ### Remote Linux Server
 
@@ -710,7 +633,7 @@ CPU / Memory / GPU / Process monitoring
 
 ## 🚀 Quick Start
 
-### 1. Clone the Repository
+### 1. Clone
 
 ```bash
 git clone https://github.com/wyq88868-arch/gpu-server-dashboard.git
@@ -731,6 +654,8 @@ Or run:
 py -3 --version
 ```
 
+---
+
 ### 3. Install Dependencies
 
 Double-click:
@@ -739,11 +664,13 @@ Double-click:
 install_dependencies_py3_only.bat
 ```
 
-Or manually run:
+Or install manually:
 
 ```cmd
 py -3 -m pip install pywebview
 ```
+
+---
 
 ### 4. Start the App
 
@@ -777,26 +704,73 @@ Default refresh interval:
 0.6
 ```
 
+Then click **Connect**.
+
+---
+
+## 📦 Build No-Console exe
+
+To build a no-console Windows exe, run:
+
+```text
+build_exe_no_console_v24.bat
+```
+
+The generated executable will be:
+
+```text
+dist/GPU-Server-Dashboard.exe
+```
+
+If the build fails, check:
+
+```text
+build_log.txt
+```
+
+For debugging:
+
+```text
+build_exe_debug_console_v24.bat
+```
+
 ---
 
 # 🔐 SSH Key Setup for Beginners
 
-## 1. What Is an SSH Key?
+If you can already run:
 
-An SSH key is like a digital key pair:
-
-```text
-private key: stays on your local machine
-public key: placed on the remote server
+```cmd
+ssh your-server
 ```
 
-The private key must never be shared.
+successfully, you can skip this section.
+
+---
+
+## 1. What Is an SSH Key?
+
+An SSH key pair includes:
+
+```text
+private key: stored on your local computer, never share it
+public key: copied to the remote server
+```
+
+Common files:
+
+```text
+id_ed25519        private key
+id_ed25519.pub    public key
+```
+
+Do not upload private keys to GitHub.
 
 ---
 
 ## 2. Generate an SSH Key on Windows
 
-Open PowerShell or CMD:
+Open CMD or PowerShell:
 
 ```cmd
 ssh-keygen -t ed25519 -C "your_email@example.com"
@@ -816,30 +790,27 @@ The key files are usually stored in:
 C:\Users\YourName\.ssh\
 ```
 
-You will see:
-
-```text
-id_ed25519        private key, never share this
-id_ed25519.pub    public key, safe to copy to the server
-```
-
 ---
 
-## 3. Copy the Public Key
-
-Run:
+## 3. View Your Public Key
 
 ```cmd
 type %USERPROFILE%\.ssh\id_ed25519.pub
 ```
 
-Copy the entire output line.
+For RSA:
+
+```cmd
+type %USERPROFILE%\.ssh\id_rsa.pub
+```
+
+Copy the full output line.
 
 ---
 
 ## 4. Add the Public Key to the Server
 
-Log in to your server:
+Log in with password first:
 
 ```cmd
 ssh user@server_ip
@@ -875,9 +846,9 @@ If you can log in without typing a password, the SSH key is working.
 
 ---
 
-## 6. Configure SSH Alias
+## 6. Configure an SSH Alias
 
-Edit:
+Edit or create:
 
 ```text
 C:\Users\YourName\.ssh\config
@@ -893,7 +864,7 @@ Host your-server
     IdentityFile ~/.ssh/id_ed25519
 ```
 
-Then test:
+Test it:
 
 ```cmd
 ssh your-server
@@ -925,7 +896,7 @@ ssh your-server nvidia-smi
 
 ---
 
-## 🧹 Close Local Ports
+## 🧹 Close Local Port
 
 The app uses local port:
 
@@ -958,8 +929,10 @@ Do not upload:
 
 ```text
 dashboard_config.json
+dashboard_runtime.log
 run_log*.txt
 install_log*.txt
+build_log.txt
 *.pem
 *.key
 id_rsa
@@ -973,18 +946,18 @@ id_ed25519
 
 ### Why can CPU usage exceed 100%?
 
-Linux reports CPU usage per core.
-A multi-threaded process can use multiple cores, so it can show values like:
+Linux reports CPU usage per CPU core.
+A multi-threaded process can use multiple cores, so it may show:
 
 ```text
 600%
 ```
 
-This means about 6 CPU cores are being used.
+This means the process is using about 6 CPU cores.
 
 ---
 
-### Does this app create SSH connections repeatedly?
+### Does the app create SSH connections repeatedly?
 
 No.
 
@@ -1000,7 +973,7 @@ Run:
 ssh your-server nvidia-smi
 ```
 
-If this command does not show GPU information, the dashboard cannot display GPU information either.
+If this command does not show GPU information, the dashboard cannot show it either.
 
 ---
 
@@ -1018,23 +991,22 @@ ssh your-server python3 --version
 
 ## 🛠️ Roadmap
 
-* [ ] Multi-server support;
+* [ ] Multi-server management;
 * [ ] Dark mode;
 * [ ] History charts;
 * [ ] GPU idle notification;
-* [ ] Process copy button;
-* [ ] Linux/macOS desktop client.
+* [ ] Process search;
+* [ ] Copy process command;
+* [ ] Linux/macOS clients.
 
 ---
 
 ## 📜 License
 
-MIT License.
+This project is licensed under the MIT License.
 
 ---
 
 ## ⭐ Star
 
-If this project helps you, feel free to give it a star!
-
-如果这个项目对你有帮助，欢迎点一个 Star！
+If this project helps you, feel free to give it a star.
